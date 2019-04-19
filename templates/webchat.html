@@ -1,0 +1,86 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>百科机器人2</title>
+<link rel="stylesheet" href="../static/src/css/layui.css" media="all">
+</head>
+<body>
+</body>
+<script src="../static/src/layui.js"></script>
+<script>
+layui.use('layim', function(layim){
+  var layim = layui.layim;
+  layim.config({
+    init: {
+      //配置客户信息
+      mine: {
+        "username": "访客" //我的昵称
+        ,"id": "100000123" //我的ID
+        ,"status": "online" //在线状态 online：在线、hide：隐身
+        ,"remark": "在深邃的编码世界，做一枚轻盈的纸飞机" //我的签名
+        ,"avatar": "http://img4.imgtn.bdimg.com/it/u=2104880319,4117781171&fm=11&gp=0.jpg" //我的头像
+      }
+    }
+    //开启客服模式
+    ,brief:false
+  });
+  //打开一个客服面板
+  layim.chat({
+    name: '百科机器人' //名称
+    ,type: 'friend' //聊天类型
+    ,avatar: 'https://robot.rszhang.top/images/icon/nv/0.jpg' //头像
+    ,id: 100 //定义唯一的id方便你处理信息
+  });
+  layim.setChatMin(); //收缩聊天面板
+});
+layui.use('layim', function(layim){
+  //建立WebSocket通讯
+  //注意：如果你要兼容ie8+，建议你采用 socket.io 的版本。下面是以原生WS为例
+  var socket = new WebSocket('ws://127.0.0.1:5000/test');
+  //连接成功时触发
+  // socket.onopen = function(){
+  //   socket.send('好烦啊');
+  // };
+  //发送一个消息
+ layim.on('sendMessage', function (res) {
+            var mine = res.mine;
+            socket.send(JSON.stringify({
+                type: 'chatMessage' //随便定义，用于在服务端区分消息类型
+                , data: res
+            }));
+        });
+        socket.onmessage = function (res) {
+            //res =JSON.parse(res)
+            console.log("rec success")
+            //res =res.data
+            //var json = eval('(' + res + ')');
+            res = String(res.data)
+            res = JSON.parse(res)
+            console.log(res)
+             console.log(typeof (res))
+            //console.log(typeof (json))
+            layim.getMessage({
+                username: "百科机器人"
+                , avatar: "https://robot.rszhang.top/images/icon/nv/0.jpg"
+                , id: "100"
+                , type: "friend"
+                , content: res.content
+                , cid: 0
+                , mine: false
+                , fromid: "100"
+            });
+        };
+    });
+</script>
+
+<!--<script>-->
+    <!--var ws = new WebSocket('ws://localhost:5000/test');-->
+    <!--ws.onmessage =function (data) {-->
+        <!--console.log('收到')-->
+        <!--console.log(data.data)-->
+    <!--}-->
+
+<!--</script>-->
+</body>
+</html>
