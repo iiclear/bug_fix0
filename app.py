@@ -107,6 +107,7 @@ def ws():
                     ans = baike.query(entity, attr)
 
                     # 如果命中答案
+                    print type(ans)
                     if type(ans) == list:
                         answer = '回答：' + QAT.ptranswer(ans, False)
                         # continue
@@ -119,6 +120,7 @@ def ws():
                 elif response.__contains__("NoMatchingTemplate"):
                     print "NoMatchingTemplate"
                     ans = search_summary.kwquery(input_message)
+                    print type(ans)
 
                 if len(ans) == 0:
                     ans = mybot.respond('找不到答案')
@@ -139,11 +141,14 @@ def ws():
                 answer = '回答：' + response
 
         s = '展开全部'
+        print type(answer).__name__
 
-        if (type(answer).__name__ == 'list') or '唔... 怎么回答...' or '唔... 主人没有教我怎么回答'in answer or '天气' in msg:
+        if (type(answer).__name__ == 'list' and len(answer)>0) or '唔... 怎么回答...'in answer or '天气' in msg:
             answer = geta(msg)
+            answer = answer
+            print 'wocao'
         else:
-            print answer
+            #print answer
             if s in str(answer):
                 print answer
                 answer = str(answer).replace('\n', '').replace('展开全部', "").split('已赞过')[0]

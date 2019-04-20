@@ -72,7 +72,7 @@ def run(question):
 
         if response == "":
             ans = mybot.respond('找不到答案')
-            print 'Eric：' + ans
+            print  ans
         # 百科搜索
         elif response[0] == '#'or len(response)<1:
             # 匹配百科
